@@ -38,10 +38,7 @@ So your work should focus on:
 - interpreting the outputs clearly
 - writing strong conclusions
 
-### Main Submission
 
-Primary submission:
-- [Starter Notebook](MLOps_Assignment_PredMaint_Starter.ipynb)
 
 Make sure it is:
 - completed
@@ -71,7 +68,7 @@ Your task is to build a **local MLOps workflow** that:
 
 ---
 
-## 2. Assignment Goals
+## 2.  Goals
 
 By the end of this assignment, you should be able to:
 - validate tabular data with Pandera

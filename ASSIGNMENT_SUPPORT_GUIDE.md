@@ -1,11 +1,10 @@
-# MLOps Assignment Guide
+# MLOps  Guide
 
 ## Predictive Maintenance Classification with Local MLOps
 
 This document is a learner support guide for the MLOps assignment.
 
-Use it together with:
-- [Starter Notebook](MLOps_Assignment_PredMaint_Starter.ipynb)
+
 
 It is designed to help you understand:
 - the business problem

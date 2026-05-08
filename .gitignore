@@ -1,0 +1,17 @@
+# Virtual environment
+venv/
+
+# MLflow tracking
+mlruns/
+mlflow.db
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Mac junk
+.DS_Store
+

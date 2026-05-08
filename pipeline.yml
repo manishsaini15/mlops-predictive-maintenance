@@ -1,0 +1,31 @@
+steps:
+  - name: load_data
+    script: src/load_data.py
+
+  - name: data_validation
+    script: src/data_validation.py
+
+  - name: eda
+    script: src/eda.py
+
+  - name: feature_engineering
+    script: src/feature_engineering.py
+
+  - name: preprocessing
+    script: src/preprocessing.py
+
+  - name: model_training
+    script: src/model_training.py
+
+  - name: optuna_tuning
+    script: src/optuna_tuning.py
+
+  - name: drift_current
+    script: src/drift_detection.py
+
+  - name: drift_stress
+    script: src/drift_stress.py
+
+  - name: shap_analysis
+    script: src/shap_analysis.py
+  

@@ -1,35 +1,71 @@
-name: ML Pipeline CI/CD
+name: ML Pipeline CI/CD with SageMaker
 
+# Trigger workflow automatically when code is pushed to main branch
 on:
   push:
     branches:
       - main
 
-  pull_request:
-    branches:
-      - main
-
 jobs:
-
-  train-and-validate:
-
+  train-and-deploy:
+    # GitHub will run this workflow on an Ubuntu machine
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Download your GitHub repository code into the runner machine
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      # Step 2: Setup required Python version
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      # Step 3: Install all dependencies required for training + deployment
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install boto3 sagemaker
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      # Step 4: Run your full ML pipeline
+      # This will execute pipeline.yml scripts via run_pipeline.py
+      - name: Run Full ML Pipeline (pipeline.yml)
+        run: |
+          python run_pipeline.py
 
-    - name: Run Full ML Pipeline
-      run: |
-        python run_pipeline.py
+      # Step 5: Package trained model into SageMaker format (model.tar.gz)
+      # SageMaker expects a tar.gz file containing model.pkl inside it
+      - name: Package model for SageMaker
+        run: |
+          mkdir -p model_artifact
+          cp best_xgboost_model.pkl model_artifact/model.pkl
+          tar -czvf model.tar.gz -C model_artifact .
+
+      # Step 6: Configure AWS credentials inside GitHub runner
+      # Credentials are stored securely in GitHub Secrets
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      # Step 7: Upload packaged model.tar.gz file into S3 bucket
+      # SageMaker will load model directly from S3
+      - name: Upload model.tar.gz to S3
+        run: |
+          aws s3 cp model.tar.gz s3://${{ secrets.S3_BUCKET_NAME }}/models/model.tar.gz
+
+      # Step 8: Deploy the model to SageMaker Endpoint automatically
+      # This script creates/updates SageMaker model + endpoint
+      - name: Deploy model to SageMaker Endpoint
+        env:
+          AWS_REGION: ap-south-1
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          SAGEMAKER_ROLE_ARN: ${{ secrets.SAGEMAKER_ROLE_ARN }}
+          ENDPOINT_NAME: mlops-predictive-maintenance-endpoint
+          MODEL_NAME: mlops-predictive-maintenance-model
+        run: |
+          python sagemaker/deploy_sagemaker.py

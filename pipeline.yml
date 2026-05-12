@@ -21,10 +21,10 @@ steps:
     script: src/optuna_tuning.py
 
   - name: drift_current
-    script: src/drift_detection.py
+    script: src/drift_detection_current.py
 
   - name: drift_stress
-    script: src/drift_stress.py
+    script: src/drift_detection_stress.py
 
   - name: shap_analysis
     script: src/shap_analysis.py

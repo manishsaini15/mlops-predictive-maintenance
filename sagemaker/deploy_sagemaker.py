@@ -18,10 +18,10 @@ S3_MODEL_PATH = f"s3://{S3_BUCKET}/models/model.tar.gz"
 
 def main():
     if not S3_BUCKET:
-        raise ValueError("❌ Missing environment variable: S3_BUCKET_NAME")
+        raise ValueError(" Missing environment variable: S3_BUCKET_NAME")
 
     if not ROLE_ARN:
-        raise ValueError("❌ Missing environment variable: SAGEMAKER_ROLE_ARN")
+        raise ValueError(" Missing environment variable: SAGEMAKER_ROLE_ARN")
 
     print("---------------------------------------------------")
     print("Deploying model to SageMaker...")
@@ -53,7 +53,7 @@ def main():
         update_endpoint=True
     )
 
-    print("✅ Deployment completed successfully!")
+    print(" Deployment completed successfully!")
     print("Endpoint Name:", ENDPOINT_NAME)
 
 
